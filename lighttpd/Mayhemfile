@@ -1,0 +1,27 @@
+# The Docker image that our target lives in.
+image: forallsecure/lighttpd:vulnerable
+
+# How long to run behavior analysis.
+duration: 90
+
+# Project and target within Mayhem
+project: lighttpd
+target: lighttpd
+
+# Turn on Mayhem's advanced triage capabilities.
+advanced_triage: true
+
+# The tasks to perform during a run. 
+tasks:
+  - name: exploitability_factors
+  - name: regression_testing
+  - name: behavior_testing
+  - name: coverage_analysis
+
+# How Mayhem will execute lighttpd.
+cmds:
+  - cmd: /usr/local/sbin/lighttpd -D -f /usr/local/etc/lighttpd.conf
+    network:
+      url: tcp://localhost:80
+      timeout: 2
+
