@@ -1,5 +1,5 @@
-project: uboot-cve-2019-13103-13106
-target: uboot
+project: uboot
+target: ext4
 
 image: forallsecure/uboot-cve-2019-13103-13106
 
