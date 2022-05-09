@@ -21,7 +21,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     cereal::JSONInputArchive ia(ss);
     ia(s2);
 
-    // assert(s == s2);
+    assert(s == s2);
 
     return 0;
 }
