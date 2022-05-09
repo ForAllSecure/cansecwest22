@@ -36,9 +36,7 @@ You should see output that looks similar to this:
 
 ## Step 2. Fuzz with libFuzzer!
 
-Starting a libFuzzer target is really easy, just run the binary!
-
-Run `afl-fuzz`:
+Starting a libFuzzer target is really easy, just run the binary:
 
 ```
 ./testme
