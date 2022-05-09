@@ -136,3 +136,13 @@ Finally, start the run (your existing Mayhemfile should work just fine):
 ```
 mayhem run .
 ```
+
+You should see output that indicates the run started successfully:
+
+```
+Run started: cereal-json/cereal-json-latest/2
+Run URL: https://mayhem.forallsecure.com:443/nathanjackson/cereal-json/cereal-json-latest/2
+cereal-json/cereal-json-latest/2
+```
+
+Open the Mayhem UI, and you should see that Mayhem finds a defect within a few seconds due to an assertion error.
