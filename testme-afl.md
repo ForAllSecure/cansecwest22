@@ -154,7 +154,7 @@ project: testme
 
 target: testme-afl
 
-image: ghcr.io/<YOUR GITHUB USERNAME>/afl-testme:latest
+image: ghcr.io/<YOUR GITHUB USERNAME>/testme-afl:latest
 
 advanced_triage: false
 

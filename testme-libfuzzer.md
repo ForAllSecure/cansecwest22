@@ -155,7 +155,7 @@ project: testme
 
 target: testme-libfuzzer
 
-image: ghcr.io/<YOUR GITHUB USERNAME>/libfuzzer-testme:latest
+image: ghcr.io/<YOUR GITHUB USERNAME>/testme-libfuzzer:latest
 
 advanced_triage: false
 
