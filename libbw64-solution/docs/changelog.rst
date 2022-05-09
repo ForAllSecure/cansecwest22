@@ -1,3 +1,0 @@
-.. changelog:
-
-.. mdinclude:: ../CHANGELOG.md
