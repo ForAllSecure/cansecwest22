@@ -98,9 +98,18 @@ Finally, you need to mark the package as public. At this time, we're only allowi
 
 https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility#configuring-access-to-container-images-for-your-personal-account
 
-## Step 4. Create a Mayhemfile
+## Step 4. Create a Folder for our target and Mayhemfile
 
-Next, we need to create a Mayhemfile that tells Mayhem how to attack this application. You can easily generate a template Mayhemfile with the following command:
+Next, we need to create a Mayhemfile that tells Mayhem how to attack this application. We also need to create a folder where we'll keep the artifacts for our target.
+
+Create a `mayhem` folder and change into it:
+
+```
+mkdir mayhem
+cd mayhem/
+```
+
+Next, generate a new `Mayhemfile`:
 
 ```
 mayhem init
@@ -136,12 +145,18 @@ ls tests/test_data
 
 So we'll just use these inputs as-is!
 
-## Step 6. Start the run
-
-Now we can start the run using `mayhem run`:
+Copy the `test_data` folder to `mayhem/tests`:
 
 ```
-mayhem run --tests file://./tests/test_data .
+cp -r tests/test_data mayhem/tests
+```
+
+## Step 6. Start the run
+
+Back in the `mayhem` folder, now we can start the run using `mayhem run`:
+
+```
+mayhem run .
 ```
 
 You should see output that looks similar to this:
