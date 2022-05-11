@@ -8,12 +8,6 @@ This lab will show you how to package libbw64 and fuzz it with Mayhem.
 
 ## Step 1. Build libbw64
 
-Clone `libbw64`:
-
-```
-git clone https://github.com/ebu/libbw64.git
-```
-
 Enter the libbw64 directory:
 
 ```
