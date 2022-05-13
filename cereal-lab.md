@@ -94,17 +94,53 @@ Run URL: https://mayhem.forallsecure.com:443/nathanjackson/cereal-json/cereal-js
 cereal-json/cereal-json-latest/1
 ```
 
-## Part 2. Convert to libFuzzer
-
-## Part 3. Adding Additional Checks
+## Part 2. Improving our Fuzzer
 
 Now that that you're successfully fuzzing cereal, you'd normally let this run for awhile, with the hope that you find a bug. What happens if you get to the point where you're not generating many new test cases and you haven't found any bugs?
 
-Well, the next step is to look to improve your target. One way we can do that is to add additional checks to our target. Since cereal is a serialization library, it probably makes sense to verify that we can serialize and deserialize data and get the same result. So in this part of the lab, we'll add our own assertion to validate the symmetry (what goes in, must come out).
+Well, the next step is to look to improve your target. There are multiple ways to do this, and we'll implement two of them in this part. First, we'll convert our harness into a libFuzzer harness which will enable in-memory fuzzing. As a result, our target should run much faster. Secondly, we'll add a custom assertion that allows us to check for symmetry. In other words, we're checking to see if we can serialize and deserialize and expect to get the same input.
 
-**Time to complete**: About 10 minutes
+### Step 1. Convert our Existing Harness to use libFuzzer
 
-### Step 1. Modify `json_harness.cpp` to deserialize the result and check for equality.
+First, we need adapt our harness to use libFuzzer. Fortunately, we'll be deleting code, so this step is pretty easy. Remember that libFuzzer harnesses deliver test cases via arguments to a function named `LLVMFuzzerTestOneInput`. So for this step, we'll rename our `main` function and remove the file IO code.
+
+Change into `cansecwest22/cereal`:
+
+    ```
+    cd cansecwest22/cereal
+    ```
+
+Modify `json_fuzzer.cpp` and the main function for libFuzzer using your favorite text editor. It should look similar to this:
+
+```
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
+{
+    std::string s(data, data + size);
+    std::stringstream ss;
+
+    {
+        cereal::JSONOutputArchive oa(ss);
+        oa(s);
+    }
+
+    return 0;
+}
+```
+
+Next we need to update the `Makefile` to add libFuzzer instrumentation to our target. We'll change the compiler from GCC to Clang, and add `-fsanitize=fuzzer`. The resulting Makefile should look similar to this:
+
+```
+json_fuzzer:
+    clang++ -std=c++17 -c -Icereal/include -fsanitize=fuzzer json_fuzzer.cpp
+    clang++ -fsanitize=fuzzer json_fuzzer.o -o json_fuzzer
+
+clean:
+    rm -f *.o json_fuzzer
+```
+
+### Step 2. Modify `json_harness.cpp` to deserialize the result and check for equality.
+
+Now we need to add a step to deserialize the data, and check for equality. Modify `json_harness.cpp` to look similar to this:
 
 ```
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
@@ -131,7 +167,17 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 }
 ```
 
-### Step 2. Start a run against the updated target.
+### Step 3. Update the `Mayhemfile`
+
+Since our Cereal harness no longer accepts file input, we need to update the Mayhemfile so that it doesn't pass the input via file. Update the `cmd` structure to remove the `@@`:
+
+```
+...
+  - cmd: /json_fuzzer
+...
+```
+
+### Step 3. Start a run against the updated target.
 
 First, re-build the Docker image:
 
@@ -147,7 +193,7 @@ docker push ghcr.io/<YOUR GITHUB USERNAME>/cereal-json:latest
 
 You should not have to mark the package as public again.
 
-Finally, start the run (your existing Mayhemfile should work just fine):
+Finally, start the run:
 
 ```
 mayhem run .
@@ -162,3 +208,4 @@ cereal-json/cereal-json-latest/2
 ```
 
 Open the Mayhem UI, and you should see that Mayhem finds a defect within a few seconds due to an assertion error.
+
