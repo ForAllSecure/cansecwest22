@@ -20,26 +20,34 @@ Focusing on JSON, we find a minimal example of how to encode to JSON here : http
 
 ### Step 2. Fuzz the JSONOutputArchive
 
-Let's modfiy the stubbed out libFuzzer harness in the `cansecwest22/cereal` folder.
+Let's modfiy the stubbed out harness in the `cansecwest22/cereal` folder.
 
 To test this, we'll test the JSON serializer's ability to handle strings, so modify the `json_fuzzer.cpp` like so:
 
 ```
 ...
-int LLVMFuzzerTestOneInput(const uint8_t* data, size_t sz)
+int main(int argc, char** argv)
 {
-    std::string input(data, sz);
+    if (argc < 2) {
+        printf("usage: %s TEST\n", argv[0]);
+        return 1;
+    }
+
+    std::ifstream ifs(argv[1], std::ios::binary);
+    std::istreambuf_iterator<char> begin{ifs}, end;
+    std::string s(begin, end);
 
     std::stringstream ss;
 
-    // Note: we have to wrap writing to the output archive because the data
-    // isn't flushed to stringstream until it goes out of scope.
     {
         cereal::JSONOutputArchive oa(ss);
         oa(s);
     }
-    ...
+
+
+    return 0;
 }
+...
 ```
 
 Next, build the Docker image for the target:
@@ -64,7 +72,13 @@ mayhem init ghcr.io/<YOUR GITHUB USERNAME>/cereal-json:latest
 
 Notice this time we provided a Docker image to `mayhem init`. We did this because the Mayhem CLI will automatically inspect a container to try to determine how to run your target. Inspect the resulting `Mayhemfile` with your favorite text editor.
 
-You should see that the fields have been filled in for you automatically!
+You should see that most of the fields have been filled in for you automatically! We just need to tell Mayhem how to attack our target. So modify the command used to exercise your target in the `Mayhemfile` using your favorite text editor by adding the `@@` symbol:
+
+```
+...
+  - cmd: /json_fuzzer @@
+...
+```
 
 Now, start the run:
 
@@ -80,7 +94,9 @@ Run URL: https://mayhem.forallsecure.com:443/nathanjackson/cereal-json/cereal-js
 cereal-json/cereal-json-latest/1
 ```
 
-## Part 2. Adding Additional Checks
+## Part 2. Convert to libFuzzer
+
+## Part 3. Adding Additional Checks
 
 Now that that you're successfully fuzzing cereal, you'd normally let this run for awhile, with the hope that you find a bug. What happens if you get to the point where you're not generating many new test cases and you haven't found any bugs?
 
