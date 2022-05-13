@@ -154,23 +154,6 @@ ssize_t sendto(int sockfd, const void *buf, size_t len, int flags,
     return (ssize_t)len;
 }
 
-int open(const char *pathname, int flags, ...)
-{
-    static int (*real_open)(const char*, int, ...) = NULL;
-
-    if (NULL == real_open) {
-        real_open = dlsym(RTLD_NEXT, "open");
-    }
-    assert(real_open);
-
-    if (0 == strcmp(pathname, "/dev/urandom")) {
-        return real_open("/dev/zero", O_RDONLY);
-    }
-
-    return real_open(pathname, flags);
-}
-
-
 int main(int argc, char **argv)
 {
     GDHCPClientError err;
