@@ -1,13 +1,8 @@
-#include <cassert>
-#include <cstdint>
-
-#include <cereal/archives/json.hpp>
-
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
+int main(int argc, char** argv)
 {
-    // TODO: Serialize to JSON
-    // TODO: De-serialize from JSON
-    // TODO: Check for equivalency, fail otherwise.
+    // TODO: Check Command-Line Args
+    // TODO: Read the file into a string.
+    // TODO: Serialize the test into JSON.
     return 0;
 }
 
