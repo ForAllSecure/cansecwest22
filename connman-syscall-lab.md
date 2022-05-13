@@ -3,6 +3,10 @@
 ## Step 1. Build the Connman DHCP Client Harness Locally
 
 ```
+cd cansecwest22/connman/connman
+```
+
+```
 ./bootstrap
 ```
 
@@ -32,7 +36,10 @@ mayhem init ghcr.io/nathanjackson/connman-dhcp-client:latest
 
 Adjust Mayhemfile:
     * Set the Input Path
+    * Set Duration
     * Enable Coverage Analysis
+
+Populate `tests` dir.
 
 ```
 mayhem run .
@@ -40,7 +47,23 @@ mayhem run .
 
 ## Step 3. Identify Failing Check with lcov
 
+```
+mayhem sync .
+```
+
+```
+genhtml -o /tmp/html --ignore-errors source line_coverage.lcov
+```
+
+Find the `check_package_owner` call, work backwards to see the xid fails.
+
+Determine how `dhcp_client->xid` gets set.
+
+Look at how `dhcp_get_random` works.
+
 ## Step 4. Override the Open System Call
+
+Modify the Open System Call to open `/dev/zero` instead of `/dev/urandom`.
 
 ```
 int open(const char *pathname, int flags, ...)
@@ -60,5 +83,5 @@ int open(const char *pathname, int flags, ...)
 }
 ```
 
-## Step 5. Fuzz Again
+## Step 5. Fuzz Again, Find Defect
 
