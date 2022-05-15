@@ -36,15 +36,7 @@ int socket(int domain, int type, int protocol)
 
 int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
 {
-    /*static int (*real_bind)(int, const struct sockaddr *, socklen_t) = NULL;
-
-    if (NULL == real_bind) {
-        real_bind = dlsym(RTLD_NEXT, "bind");
-        assert(real_bind);
-    }
-    return real_bind(sockfd, addr, addrlen); */
-
-    /* this is really hacky */
+    /* this is really hacky, but it works */
     if (-1 == raw_socket_fd) {
         raw_socket_fd = sockfd;
     }
@@ -55,11 +47,6 @@ int poll(struct pollfd *fds, nfds_t nfds, int timeout)
 {
     int i = -1;
     int res = 0;
-
-    /*if (NULL == real_poll) {
-        real_poll = dlsym(RTLD_NEXT, "poll");
-        assert(real_poll);
-    }*/
 
     if (payload_delivered) {
         fprintf(stderr, "payload delivered, goodbye\n");
