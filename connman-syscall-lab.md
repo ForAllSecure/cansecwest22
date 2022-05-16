@@ -37,7 +37,7 @@ cd ../
 For this lab, I have already created a Dockerfile to package up the DHCP client harness. You can build it using this command:
 
 ```
-docker build -t ghcr.io/<YOUR GITHUB USERNAME>/connman-dhcp-client:latest .
+docker build -t ghcr.io/<YOUR GITHUB USERNAME>/connman-dhcp-client:latest -f dhcp-client/Dockerfile .
 ```
 
 Now, push the DHCP client image up to the GitHub container registry:
