@@ -46,7 +46,7 @@ make
 Build the Docker image:
 
 ```
-docker build -t ghcr.io/<YOUR GITHUB USERNAME>/connman-dnsproxy:latest -f dnsproxy.Dockerfile .
+docker build -t ghcr.io/<YOUR GITHUB USERNAME>/connman-dnsproxy:latest -f dnsproxy/Dockerfile .
 ```
 
 Push the Docker image:
@@ -54,6 +54,8 @@ Push the Docker image:
 ```
 docker push ghcr.io/<YOUR GITHUB USERNAME>/connman-dnsproxy:latest
 ```
+
+Be sure to mark the package as public in GitHub.
 
 ## Step 4. Run on Mayhem
 

@@ -151,7 +151,7 @@ Once you've modified the code, rebuild and push your Docker image:
 cd connman/
 make
 cd -
-docker build -t ghcr.io/<YOUR GITHUB USERNAME>/connman-dhcp-client:latest -f mayhem/DHCP-Client.Dockerfile .
+docker build -t ghcr.io/<YOUR GITHUB USERNAME>/connman-dhcp-client:latest -f dhcp-client/Dockerfile .
 docker push ghcr.io/<YOUR GITHUB USERNAME>/connman-dhcp-client:latest
 ```
 
