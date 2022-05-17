@@ -12,8 +12,5 @@ RUN make CC=afl-clang-fast CXX=afl-clang-fast++ -j$(grep -c ^processor /proc/cpu
 
 FROM --platform=linux/amd64 ubuntu:20.04
 
-RUN apt-get update && \
-    apt-get install -y afl++
-
 COPY --from=builder /uboot/u-boot /
 
