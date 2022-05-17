@@ -19,7 +19,7 @@ From cell phones to DoD weapons systems, today, software is in most of the produ
 * [Lab 4. Harnessing Cereal](cereal-lab.md#part-1-harnessing-cereal)
 * [Lab 5. U-Boot](uboot-lab.md)
 * [Lab 6. Cereal Revisited](cereal-lab.md#part-2-improving-our-fuzzer)
-* Lab 7. Connman DNS Proxy
+* [Lab 7. Connman DNS Proxy](connman-patch-lab.md)
 * [Lab 8. Reproducing Advanced Triage Defects](lighttpd-valgrind.md)
 * [Lab 9. Connman DHCP Client](connman-syscall-lab.md)
 
