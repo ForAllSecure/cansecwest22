@@ -9,6 +9,7 @@ From cell phones to DoD weapons systems, today, software is in most of the produ
 * [Mayhem](https://mayhem.forallsecure.com)
 * [Mayhem Hacking Community](https://community.forallsecure.com/)
 * [TBONE Writeup](https://kunnamon.io/tbone/tbone-v1.0-redacted.pdf)
+* [Mayhem Heroes Resources](https://github.com/mayhemheroes/hero-resources)
 
 ## Lab Links
 
