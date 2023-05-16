@@ -1,0 +1,106 @@
+diff --git a/Makefile.am b/Makefile.am
+index 9c296009..d1134281 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -238,7 +238,8 @@ src_connmand_CFLAGS = @DBUS_CFLAGS@ @GLIB_CFLAGS@ @XTABLES_CFLAGS@ \
+ 				-DSTORAGEDIR=\""$(storagedir)\"" \
+ 				-DVPN_STORAGEDIR=\""$(vpn_storagedir)\"" \
+ 				-DCONFIGDIR=\""$(configdir)\"" \
+-				-I$(builddir)/src
++				-I$(builddir)/src \
++                -fsanitize=fuzzer,address -DFUZZ=1 -g
+
+ EXTRA_DIST = src/genbuiltin src/connman-dbus.conf src/connman-polkit.conf \
+ 				plugins/connman-nmcompat.conf \
+diff --git a/src/dnsproxy.c b/src/dnsproxy.c
+index f3ebcf0e..e5690494 100644
+--- a/src/dnsproxy.c
++++ b/src/dnsproxy.c
+@@ -1931,7 +1931,11 @@ static int forward_dns_reply(unsigned char *reply, int reply_len, int protocol,
+
+ 	DBG("Received %d bytes (id 0x%04x)", reply_len, dns_id);
+
+-	req = find_request(dns_id);
++    struct request_data _req;
++    memset(&_req, 0, sizeof(_req));
++    _req.append_domain = true;
++
++    req = &_req;
+ 	if (!req)
+ 		return -EINVAL;
+
+@@ -2105,7 +2109,7 @@ static int forward_dns_reply(unsigned char *reply, int reply_len, int protocol,
+ 		}
+
+ 	pass:
+-		g_free(req->resp);
++		/*g_free(req->resp);
+ 		req->resplen = 0;
+
+ 		req->resp = g_try_malloc(reply_len);
+@@ -2115,7 +2119,7 @@ static int forward_dns_reply(unsigned char *reply, int reply_len, int protocol,
+ 		memcpy(req->resp, reply, reply_len);
+ 		req->resplen = reply_len;
+
+-		cache_update(data, reply, reply_len);
++		cache_update(data, reply, reply_len);*/
+
+ 		g_free(new_reply);
+ 	}
+@@ -2129,7 +2133,7 @@ out:
+ 		}
+ 	}
+
+-	request_list = g_slist_remove(request_list, req);
++	/*request_list = g_slist_remove(request_list, req);
+
+ 	if (protocol == IPPROTO_UDP) {
+ 		sk = get_req_udp_socket(req);
+@@ -2150,7 +2154,7 @@ out:
+ 	else
+ 		DBG("proto %d sent %d bytes to %d", protocol, err, sk);
+
+-	destroy_request_data(req);
++	destroy_request_data(req);*/
+
+ 	return err;
+ }
+@@ -3943,3 +3947,19 @@ void __connman_dnsproxy_cleanup(void)
+
+ 	g_hash_table_destroy(partial_tcp_req_table);
+ }
++
++#ifdef FUZZ
++
++int LLVMFuzzerTestOneInput(const uint8_t* data, size_t sz)
++{
++	unsigned char buf[4096];
++
++    size_t len = sz > sizeof(buf) ? sizeof(buf) : sz;
++    memcpy(buf, data, len);
++
++	forward_dns_reply(buf, len, IPPROTO_UDP, data);
++
++    return 0;
++}
++
++#endif
+diff --git a/src/main.c b/src/main.c
+index f44a2ed6..16b15f35 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -585,6 +585,8 @@ unsigned int connman_timeout_browser_launch(void)
+ 	return connman_settings.timeout_browserlaunch;
+ }
+
++#ifndef FUZZ
++
+ int main(int argc, char *argv[])
+ {
+ 	GOptionContext *context;
+@@ -769,3 +771,5 @@ int main(int argc, char *argv[])
+
+ 	return 0;
+ }
++
++#endif

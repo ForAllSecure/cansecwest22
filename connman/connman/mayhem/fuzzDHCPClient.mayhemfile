@@ -1,0 +1,8 @@
+project: connman
+target: dhcpclient
+
+advanced_triage: true
+
+cmds:
+
+  - cmd: /fuzz_dhcp_client_uninst @@

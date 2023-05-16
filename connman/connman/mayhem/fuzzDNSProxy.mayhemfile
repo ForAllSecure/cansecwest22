@@ -1,0 +1,6 @@
+project: connman
+target: dnsproxy
+
+cmds:
+  - cmd: /connmand
+    libfuzzer: true
