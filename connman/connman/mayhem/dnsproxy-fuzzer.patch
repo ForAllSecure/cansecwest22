@@ -8,7 +8,7 @@ index 9c296009..d1134281 100644
  				-DCONFIGDIR=\""$(configdir)\"" \
 -				-I$(builddir)/src
 +				-I$(builddir)/src \
-+                -fsanitize=fuzzer,address -DFUZZ=1 -g
++                -fsanitize=fuzzer,address -DMAYHEM=1 -g
 
  EXTRA_DIST = src/genbuiltin src/connman-dbus.conf src/connman-polkit.conf \
  				plugins/connman-nmcompat.conf \
@@ -70,7 +70,7 @@ index f3ebcf0e..e5690494 100644
  	g_hash_table_destroy(partial_tcp_req_table);
  }
 +
-+#ifdef FUZZ
++#ifdef MAYHEM 
 +
 +int LLVMFuzzerTestOneInput(const uint8_t* data, size_t sz)
 +{
@@ -93,7 +93,7 @@ index f44a2ed6..16b15f35 100644
  	return connman_settings.timeout_browserlaunch;
  }
 
-+#ifndef FUZZ
++#ifndef MAYHEM 
 +
  int main(int argc, char *argv[])
  {
